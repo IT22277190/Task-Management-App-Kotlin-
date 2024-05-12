@@ -30,7 +30,7 @@
         android:label="EditTaskFragment" >
         <action
             android:id="@+id/action_editTaskFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />.
+            app:destination="@id/homeFragment" />
 
         <argument
             android:name="task"
