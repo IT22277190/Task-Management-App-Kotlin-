@@ -18,9 +18,15 @@ import com.example.tpdoapp.R
 import com.example.tpdoapp.databinding.FragmentAddTaskBinding
 import com.example.tpdoapp.model.Task
 import com.example.tpdoapp.viewmodel.TaskViewModel
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class AddTaskFragment : Fragment(R.layout.fragment_add_task),MenuProvider {
+
+
+    private var datePicker: MaterialDatePicker<Long>? = null
 
     private var addTaskBinding:FragmentAddTaskBinding?=null
     private val binding get() = addTaskBinding!!
@@ -47,13 +53,30 @@ class AddTaskFragment : Fragment(R.layout.fragment_add_task),MenuProvider {
         tasksViewModel = (activity as MainActivity).taskViewModel
         addTaskView =view
 
+        datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select Deadline")
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .build()
+
+        datePicker?.addOnPositiveButtonClickListener { selection ->
+            // Handle selected date
+            val deadline = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selection)
+            binding.addNoteDeadlineButton.text = deadline
+        }
+
+        binding.addNoteDeadlineButton.setOnClickListener {
+            datePicker?.show(parentFragmentManager, "DATE_PICKER")
+        }
+
+
     }
 
     private fun saveTask(view:View){
         val taskTitle = binding.addNoteTitle.text.toString().trim()
         val taskDesc = binding.addNoteDesc.text.toString().trim()
         val taskPriority = binding.addNotePriority.text.toString().trim()
-        val taskDeadline = binding.addNoteDeadline.text.toString().trim()
+        val taskDeadline = binding.addNoteDeadlineButton.text.toString().trim()
+
 
         if(taskTitle.isNotEmpty()){
             val task = Task(0,taskTitle,taskDesc,taskPriority,taskDeadline)
